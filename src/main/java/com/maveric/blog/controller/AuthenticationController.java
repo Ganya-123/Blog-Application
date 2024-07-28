@@ -1,7 +1,6 @@
 package com.maveric.blog.controller;
 
-import com.maveric.blog.dto.RegisterRequest;
-import com.maveric.blog.dto.RegisterResponse;
+import com.maveric.blog.dto.*;
 import com.maveric.blog.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,5 +15,16 @@ public class AuthenticationController {
   @PostMapping("/register")
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
     return ResponseEntity.ok(authenticationService.register(request));
+  }
+
+  @PostMapping("/authenticate")
+  public ResponseEntity<AuthenticationResponse> authenticateRequest(
+      @RequestBody AuthenticationRequest request) {
+    return ResponseEntity.ok(authenticationService.authenticate(request));
+  }
+
+  @PutMapping("/forgotPassword")
+  public ResponseEntity<String> forgotPassword(@RequestBody ForgotPassword forgotPassword) {
+    return ResponseEntity.ok(authenticationService.forgotPassword(forgotPassword));
   }
 }
