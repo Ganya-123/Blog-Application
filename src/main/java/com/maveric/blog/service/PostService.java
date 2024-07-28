@@ -5,10 +5,7 @@ import com.maveric.blog.dto.PostResponseDto;
 import com.maveric.blog.entity.Category;
 import com.maveric.blog.entity.Post;
 import com.maveric.blog.entity.User;
-import com.maveric.blog.exceptions.AuthorValidationException;
-import com.maveric.blog.exceptions.CategoryNotFoundException;
-import com.maveric.blog.exceptions.PostNotFoundException;
-import com.maveric.blog.exceptions.UserNotFoundException;
+import com.maveric.blog.exceptions.*;
 import com.maveric.blog.repository.CategoryRepository;
 import com.maveric.blog.repository.PostRepository;
 import com.maveric.blog.repository.UserRepository;
@@ -16,13 +13,17 @@ import com.maveric.blog.security.JwtService;
 import com.maveric.blog.utils.Constants;
 import com.maveric.blog.utils.Converter;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
   private final PostRepository postRepository;
+  private final ModelMapper mapper;
   private final UserRepository userRepository;
   private final CategoryRepository categoryRepository;
   private final JwtService jwtService;
@@ -83,5 +84,69 @@ public class PostService {
     existingPost.setFeatured(dto.isFeatured());
     Post updatedPost = postRepository.save(existingPost);
     return Converter.toResponseDto(updatedPost);
+  }
+
+  public PostResponseDto publishPost(Long postId, Long authorId, String token) {
+    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+    if (authorId != tokenUserId) {
+      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+    }
+    Post post =
+        postRepository
+            .findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(Constants.POST_NOT_FOUND));
+    if (post.isPublished()) {
+      throw new PublishPostException(Constants.POST_ALREADY_PUBLISHED);
+    }
+    if (post.getAuthor().getId() != authorId) {
+      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+    }
+    post.setPublished(true);
+    post.setPublishedAt(LocalDateTime.now());
+    post.setDraft(false);
+    Post publishedPost = postRepository.save(post);
+    return Converter.toResponseDto(post);
+  }
+
+  public PostResponseDto unpublishPost(Long postId, Long authorId, String token) {
+    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+    if (authorId != tokenUserId) {
+      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+    }
+    Post post =
+        postRepository
+            .findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(Constants.POST_NOT_FOUND));
+    if (!post.isPublished()) {
+      throw new PublishPostException(Constants.POST_ALREADY_UNPUBLISHED);
+    }
+    if (post.getAuthor().getId() != authorId) {
+      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+    }
+    post.setPublished(false);
+    post.setPublishedAt(null);
+    Post unpublishedPost = postRepository.save(post);
+    return Converter.toResponseDto(post);
+  }
+
+  public String deletePost(Long postId, Long authorId, String token) {
+    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+    if (authorId != tokenUserId) {
+      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+    }
+    Post post =
+        postRepository
+            .findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(Constants.POST_NOT_FOUND));
+    if (post.getAuthor().getId() != authorId) {
+      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+    }
+    postRepository.deleteById(postId);
+    return Constants.POST_DELETE_SUCCESS;
+  }
+
+  public List<PostResponseDto> getPublishedPosts() {
+    List<Post> posts = postRepository.findByPublishedTrue();
+    return posts.stream().map(i -> Converter.toResponseDto(i)).collect(Collectors.toList());
   }
 }
