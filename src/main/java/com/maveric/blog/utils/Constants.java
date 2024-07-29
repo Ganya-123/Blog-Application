@@ -19,4 +19,6 @@ public class Constants {
 
   public static final String CATEGORY_EXISTS = "Category already present";
   public static final String CATEGORY_DELETE_SUCCESS = "Category deleted successfully";
+  public static final String EMAIL_EXISTS = "Email Already Registered";
+  public static final String PASSWORD_CHANGE_SUCCESS = "Password Changed Successfully";
 }

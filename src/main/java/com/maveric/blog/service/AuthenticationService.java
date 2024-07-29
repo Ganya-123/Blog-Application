@@ -2,8 +2,12 @@ package com.maveric.blog.service;
 
 import com.maveric.blog.dto.*;
 import com.maveric.blog.entity.User;
+import com.maveric.blog.exceptions.AuthorValidationException;
+import com.maveric.blog.exceptions.EmailAlreadyExistsException;
+import com.maveric.blog.exceptions.UserNotFoundException;
 import com.maveric.blog.repository.UserRepository;
 import com.maveric.blog.security.JwtService;
+import com.maveric.blog.utils.Constants;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,7 +30,7 @@ public class AuthenticationService {
         .findByEmail(request.getEmail())
         .ifPresent(
             user -> {
-              throw new RuntimeException("Email already exists");
+              throw new EmailAlreadyExistsException(Constants.EMAIL_EXISTS);
             });
     User user =
         User.builder()
@@ -51,11 +55,12 @@ public class AuthenticationService {
       String jwtoken = jwtService.generateToken(user);
       return AuthenticationResponse.builder().token(jwtoken).build();
     } else {
-      throw new RuntimeException("User not found");
+      throw new UserNotFoundException(Constants.AUTHOR_NOT_FOUND);
     }
   }
 
   public String forgotPassword(ForgotPassword forgotPassword) {
+
     if (!forgotPassword.getNewPassword().equals(forgotPassword.getConfirmPassword())) {
       return "New password and confirm password do not match";
     }
@@ -63,7 +68,7 @@ public class AuthenticationService {
     User user =
         userRepository
             .findByEmail(forgotPassword.getEmailId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
     if (!user.getMobileNumber().equals(forgotPassword.getMobileNumber())) {
       return "Mobile number does not match";
@@ -78,5 +83,69 @@ public class AuthenticationService {
     userRepository.save(user);
 
     return "Password reset successful";
+  }
+
+  public RegisterResponse updateUser(Long id, UserUpdateRequestDto updateRequest, String token) {
+    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+
+    if (!id.equals(tokenUserId)) {
+      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+    }
+
+    User user =
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
+
+    if (updateRequest.getFullName() != null) {
+      user.setFullName(updateRequest.getFullName());
+    }
+
+    if (updateRequest.getBio() != null) {
+      user.setBio(updateRequest.getBio());
+    }
+
+    if (updateRequest.getAvatar() != null) {
+      user.setAvatar(updateRequest.getAvatar());
+    }
+
+    if (updateRequest.getMobileNumber() != null) {
+      user.setMobileNumber(updateRequest.getMobileNumber());
+    }
+
+    user = userRepository.save(user);
+
+    return mapper.map(user, RegisterResponse.class);
+  }
+
+  public String changePassword(ChangePasswordDto changePassword, String token) {
+    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+
+    User user =
+        userRepository
+            .findByEmail(changePassword.getEmailId())
+            .orElseThrow(() -> new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
+
+    if (!user.getId().equals(tokenUserId)) {
+      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+    }
+
+    if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
+      return "New password and confirm password do not match";
+    }
+
+    if (!passwordEncoder.matches(changePassword.getCurrentPassword(), user.getPassword())) {
+      return "Current password is incorrect";
+    }
+
+    if (passwordEncoder.matches(changePassword.getNewPassword(), user.getPassword())) {
+      return "New password cannot be the same as the current password";
+    }
+
+    String encodedNewPassword = passwordEncoder.encode(changePassword.getNewPassword());
+    user.setPassword(encodedNewPassword);
+    userRepository.save(user);
+
+    return Constants.PASSWORD_CHANGE_SUCCESS;
   }
 }
