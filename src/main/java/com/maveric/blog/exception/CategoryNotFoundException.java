@@ -1,6 +1,6 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
-public class CategoryNotFoundException extends RuntimeException{
+public class CategoryNotFoundException extends RuntimeException {
     public CategoryNotFoundException() {
         super();
     }

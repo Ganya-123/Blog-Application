@@ -3,64 +3,58 @@ package com.maveric.blog.controller;
 import com.maveric.blog.dto.PostRequestDto;
 import com.maveric.blog.dto.PostResponseDto;
 import com.maveric.blog.service.PostService;
-import java.util.List;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class PostController {
-  @Autowired private final PostService postService;
+    private final PostService postService;
 
-  @PostMapping("/post")
-  public ResponseEntity<PostResponseDto> createPost(
-      @RequestBody PostRequestDto postRequestDto, @RequestHeader("Authorization") String token) {
-    PostResponseDto createdPost = postService.createPost(postRequestDto, token);
-    return ResponseEntity.status(201).body(createdPost);
-  }
+    @PostMapping("/post")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostRequestDto postRequestDto, @RequestHeader("Authorization") String token) {
 
-  @PutMapping("/{id}/post")
-  public ResponseEntity<PostResponseDto> updatePost(
-      @PathVariable Long id,
-      @RequestBody PostRequestDto post,
-      @RequestHeader("Authorization") String token) {
+        PostResponseDto createdPost = postService.createPost(postRequestDto, token);
+        return ResponseEntity.status(201).body(createdPost);
+    }
 
-    PostResponseDto updatedPost = postService.updatePost(id, post, token);
-    return ResponseEntity.ok(updatedPost);
-  }
+    @PutMapping("/post/{id}")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @Valid @RequestBody PostRequestDto post, @RequestHeader("Authorization") String token) {
 
-  @PutMapping("author/{authorId}/post/{postId}/publish")
-  public ResponseEntity<PostResponseDto> publishPost(
-      @PathVariable Long postId,
-      @PathVariable Long authorId,
-      @RequestHeader("Authorization") String token) {
-    PostResponseDto publishedPost = postService.publishPost(postId, authorId, token);
-    return ResponseEntity.ok(publishedPost);
-  }
+        PostResponseDto updatedPost = postService.updatePost(id, post, token);
+        return ResponseEntity.ok(updatedPost);
+    }
 
-  @PutMapping("author/{authorId}/post/{postId}/unpublish")
-  public ResponseEntity<PostResponseDto> unpublishPost(
-      @PathVariable Long postId,
-      @PathVariable Long authorId,
-      @RequestHeader("Authorization") String token) {
-    PostResponseDto unpublishedPost = postService.unpublishPost(postId, authorId, token);
-    return ResponseEntity.ok(unpublishedPost);
-  }
+    @PutMapping("author/{authorId}/post/{postId}/publish")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public ResponseEntity<PostResponseDto> publishPost(@PathVariable Long postId, @PathVariable Long authorId, @RequestHeader("Authorization") String token) {
+        PostResponseDto publishedPost = postService.publishPost(postId, authorId, token);
+        return ResponseEntity.ok(publishedPost);
+    }
 
-  @DeleteMapping("author/{authorId}/post/{postId}")
-  public ResponseEntity<String> deletePost(
-      @PathVariable Long postId,
-      @PathVariable Long authorId,
-      @RequestHeader("Authorization") String token) {
-    String response = postService.deletePost(postId, authorId, token);
-    return ResponseEntity.ok(response);
-  }
+    @PutMapping("author/{authorId}/post/{postId}/unpublish")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public ResponseEntity<PostResponseDto> unpublishPost(@PathVariable Long postId, @PathVariable Long authorId, @RequestHeader("Authorization") String token) {
+        PostResponseDto unpublishedPost = postService.unpublishPost(postId, authorId, token);
+        return ResponseEntity.ok(unpublishedPost);
+    }
 
-  @GetMapping("/published")
-  public ResponseEntity<List<PostResponseDto>> getPublishedPosts() {
-    List<PostResponseDto> posts = postService.getPublishedPosts();
-    return ResponseEntity.ok(posts);
-  }
+    @DeleteMapping("author/{authorId}/post/{postId}")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId, @PathVariable Long authorId, @RequestHeader("Authorization") String token) {
+        String response = postService.deletePost(postId, authorId, token);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{postId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> adminDeletePost(@PathVariable Long postId) {
+        String response = postService.adminDeletePost(postId);
+        return ResponseEntity.ok(response);
+    }
 }

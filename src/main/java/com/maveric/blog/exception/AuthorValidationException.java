@@ -1,8 +1,8 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
 public class AuthorValidationException extends RuntimeException {
     public AuthorValidationException() {
-    super();
+        super();
     }
 
     public AuthorValidationException(String message) {

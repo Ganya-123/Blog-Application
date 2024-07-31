@@ -1,8 +1,8 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
 public class PublishPostException extends RuntimeException {
     public PublishPostException() {
-    super();
+        super();
     }
 
     public PublishPostException(String message) {

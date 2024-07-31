@@ -1,8 +1,8 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException() {
-    super();
+        super();
     }
 
     public EmailAlreadyExistsException(String message) {

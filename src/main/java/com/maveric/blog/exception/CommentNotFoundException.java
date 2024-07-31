@@ -1,8 +1,8 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
-public class CommentNotFoundException extends RuntimeException{
+public class CommentNotFoundException extends RuntimeException {
     public CommentNotFoundException() {
-    super();
+        super();
     }
 
     public CommentNotFoundException(String message) {

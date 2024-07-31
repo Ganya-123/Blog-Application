@@ -1,8 +1,8 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
-public class UserNotFoundException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {
-    super();
+        super();
     }
 
     public UserNotFoundException(String message) {

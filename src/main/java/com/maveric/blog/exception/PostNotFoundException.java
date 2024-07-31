@@ -1,8 +1,9 @@
-package com.maveric.blog.exceptions;
+package com.maveric.blog.exception;
 
-public class PostNotFoundException extends RuntimeException{
+public class PostNotFoundException extends RuntimeException {
+
     public PostNotFoundException() {
-    super();
+        super();
     }
 
     public PostNotFoundException(String message) {
