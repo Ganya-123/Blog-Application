@@ -1,5 +1,6 @@
 package com.maveric.blog.dto;
 
+import com.maveric.blog.entity.Avatar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

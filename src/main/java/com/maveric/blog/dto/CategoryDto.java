@@ -1,5 +1,6 @@
 package com.maveric.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordDto {
-
-  private String emailId;
-  private String currentPassword;
-  private String newPassword;
-  private String confirmPassword;
+public class CategoryDto {
+    @NotBlank(message = "Category cannot be blank")
+    private String name;
 }

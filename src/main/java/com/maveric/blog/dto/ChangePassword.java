@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgotPassword {
+public class ChangePassword {
 
     @NotBlank(message = "Email ID is required")
     private String emailId;
 
-    @NotBlank(message = "Mobile number is required")
-    private String mobileNumber;
+    @NotBlank(message = "Current password is required")
+    private String currentPassword;
 
     @NotBlank(message = "New password is required")
     private String newPassword;
