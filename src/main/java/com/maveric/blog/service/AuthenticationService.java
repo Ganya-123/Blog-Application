@@ -82,7 +82,7 @@ public class AuthenticationService {
     user.setPassword(encodedNewPassword);
     userRepository.save(user);
 
-    return "Password reset successful";
+    return Constants.PASSWORD_RESET_SUCCESS;
   }
 
   public RegisterResponse updateUser(Long id, UserUpdateRequestDto updateRequest, String token) {
