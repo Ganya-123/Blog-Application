@@ -13,6 +13,7 @@ import com.maveric.blog.exception.*;
 import com.maveric.blog.security.JwtService;
 import com.maveric.blog.service.PostService;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -503,5 +504,44 @@ public class PostControllerIntegrationTesting {
         .perform(delete("/{postId}", 1L).header("Authorization", VALID_TEST_TOKEN))
         .andExpect(jsonPath("$.message").value(Constants.POST_NOT_FOUND))
         .andExpect(jsonPath("$.errors").isEmpty());
+  }
+
+  @Test
+  @WithMockUser(authorities = {"WRITE", "READ"})
+  public void testGetAllPosts_EmptyList() throws Exception {
+
+    when(postService.getAllPosts()).thenReturn(Collections.emptyList());
+
+    mockMvc
+        .perform(get("/posts").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(content().string("[]"));
+  }
+
+  @Test
+  @WithMockUser(authorities = {"WRITE", "READ"})
+  public void testGetAllPosts_NonEmptyList() throws Exception {
+
+    PostResponseDto post1 = new PostResponseDto();
+    post1.setPostId(1L);
+    post1.setTitle("Title one");
+    post1.setContent("content matters");
+    post1.setAuthorId(1L);
+    post1.setCategoryId(1L);
+    PostResponseDto post2 = new PostResponseDto();
+    post2.setPostId(1L);
+    post2.setTitle("Title one");
+    post2.setContent("content matters");
+    post2.setAuthorId(1L);
+    post2.setCategoryId(1L);
+
+    when(postService.getAllPosts()).thenReturn(List.of(post1, post2));
+
+    mockMvc
+        .perform(get("/posts").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(2));
   }
 }

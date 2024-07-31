@@ -13,6 +13,8 @@ import com.maveric.blog.repository.UserRepository;
 import com.maveric.blog.security.JwtService;
 import com.maveric.blog.util.Converter;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -152,5 +154,10 @@ public class PostService {
 
     postRepository.deleteById(postId);
     return Constants.POST_DELETE_SUCCESS;
+  }
+
+  public List<PostResponseDto> getAllPosts() {
+    List<Post> posts = postRepository.findAll();
+    return posts.stream().map(Converter::toResponseDto).collect(Collectors.toList());
   }
 }

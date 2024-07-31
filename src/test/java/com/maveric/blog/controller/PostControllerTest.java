@@ -1,7 +1,6 @@
 package com.maveric.blog.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -11,6 +10,8 @@ import com.maveric.blog.dto.PostResponseDto;
 import com.maveric.blog.exception.*;
 import com.maveric.blog.security.JwtService;
 import com.maveric.blog.service.PostService;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -333,5 +334,43 @@ class PostControllerTest {
         assertThrows(PostNotFoundException.class, () -> postController.adminDeletePost(1L));
     assertEquals(Constants.POST_NOT_FOUND, exception.getMessage());
     verify(postService, times(1)).adminDeletePost(anyLong());
+  }
+  @Test
+  void testGetAllPosts_EmptyList() {
+    when(postService.getAllPosts()).thenReturn(Collections.emptyList());
+    ResponseEntity<List<PostResponseDto>> responseEntity = postController.getAllPosts();
+    List<PostResponseDto> result = responseEntity.getBody();
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    verify(postService, times(1)).getAllPosts();
+  }
+
+  @Test
+  void testGetAllPosts_NonEmptyList() {
+
+    PostResponseDto post1 = new PostResponseDto();
+    post1.setPostId(1L);
+    post1.setTitle("Title one");
+    post1.setContent("content matters");
+    post1.setAuthorId(1L);
+    post1.setCategoryId(1L);
+
+    PostResponseDto post2 = new PostResponseDto();
+    post2.setPostId(2L);
+    post2.setTitle("Title two");
+    post2.setContent("more content matters");
+    post2.setAuthorId(2L);
+    post2.setCategoryId(2L);
+
+    when(postService.getAllPosts()).thenReturn(List.of(post1, post2));
+
+    ResponseEntity<List<PostResponseDto>> responseEntity = postController.getAllPosts();
+    List<PostResponseDto> result = responseEntity.getBody();
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    verify(postService, times(1)).getAllPosts();
   }
 }

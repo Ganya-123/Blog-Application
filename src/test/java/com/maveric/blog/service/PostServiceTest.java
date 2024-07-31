@@ -17,6 +17,9 @@ import com.maveric.blog.repository.PostRepository;
 import com.maveric.blog.repository.UserRepository;
 import com.maveric.blog.security.JwtService;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -385,5 +388,29 @@ public class PostServiceTest {
 
     assertEquals(Constants.POST_NOT_FOUND, exception.getMessage());
     verify(postRepository, times(0)).deleteById(anyLong());
+  }
+
+  @Test
+  public void testGetAllPosts_EmptyList() {
+
+    when(postRepository.findAll()).thenReturn(Collections.emptyList());
+
+    List<PostResponseDto> result = postService.getAllPosts();
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  public void testGetAllPosts_NonEmptyList() {
+
+    Post post1 = new Post();
+    Post post2 = new Post();
+    when(postRepository.findAll()).thenReturn(Arrays.asList(post1, post2));
+
+    List<PostResponseDto> result = postService.getAllPosts();
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
   }
 }

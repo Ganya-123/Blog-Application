@@ -4,6 +4,7 @@ import com.maveric.blog.dto.PostRequestDto;
 import com.maveric.blog.dto.PostResponseDto;
 import com.maveric.blog.service.PostService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,5 +71,12 @@ public class PostController {
   public ResponseEntity<String> adminDeletePost(@PathVariable Long postId) {
     String response = postService.adminDeletePost(postId);
     return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/posts")
+  @PreAuthorize("hasAuthority('WRITE') or hasAuthority('READ')")
+  public ResponseEntity<List<PostResponseDto>> getAllPosts() {
+    List<PostResponseDto> posts = postService.getAllPosts();
+    return ResponseEntity.ok(posts);
   }
 }
