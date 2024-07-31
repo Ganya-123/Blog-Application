@@ -1,0 +1,6 @@
+package com.maveric.blog.controller;
+
+import static org.junit.jupiter.api.Assertions.*;
+class PostControllerTest {
+  
+}
