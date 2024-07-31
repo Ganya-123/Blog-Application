@@ -4,16 +4,14 @@ import lombok.Data;
 
 @Data
 public class PostResponseDto {
-    private Long postId;
+  private Long postId;
 
-    private String title;
+  private String title;
 
-    private String content;
+  private String content;
 
-    private Long authorId;
+  private Long authorId;
 
-    private Long categoryId;
-    private boolean featured;
-
-
+  private Long categoryId;
+  private boolean featured;
 }

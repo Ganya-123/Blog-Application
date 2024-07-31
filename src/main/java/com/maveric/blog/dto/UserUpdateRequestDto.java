@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserUpdateRequestDto {
 
-    private String fullName;
-    private String bio;
-    private Avatar avatar;
-    private String mobileNumber;
+  private String fullName;
+  private String bio;
+  private Avatar avatar;
+  private String mobileNumber;
 }

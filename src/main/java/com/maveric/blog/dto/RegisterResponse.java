@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class RegisterResponse {
-    private String fullName;
-    private String email;
-    private String mobileNumber;
-    private Role role;
-    private String bio;
-    private Avatar avatar;
-
+  private String fullName;
+  private String email;
+  private String mobileNumber;
+  private Role role;
+  private String bio;
+  private Avatar avatar;
 }

@@ -14,27 +14,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class RegisterRequest {
 
-    @NotBlank(message = "Full name is required")
-    private String fullName;
+  @NotBlank(message = "Full name is required")
+  private String fullName;
 
-    @NotBlank(message = "Email is required")
-    @Email(
-            regexp =
-                    "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$",
-            message = "Email format is invalid")
-    private String email;
+  @NotBlank(message = "Email is required")
+  @Email(
+      regexp =
+          "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$",
+      message = "Email format is invalid")
+  private String email;
 
-    @NotBlank(message = "Password is required")
-    private String password;
+  @NotBlank(message = "Password is required")
+  private String password;
 
-    @NotBlank(message = "Mobile number is required")
-    @Pattern(regexp = "^\\d{10}$", message = "Mobile number must be 10 digits")
-    private String mobileNumber;
+  @NotBlank(message = "Mobile number is required")
+  @Pattern(regexp = "^\\d{10}$", message = "Mobile number must be 10 digits")
+  private String mobileNumber;
 
-    private Role role;
-    private String bio;
-    private Avatar avatar;
+  private Role role;
+  private String bio;
+  private Avatar avatar;
 }

@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChangePassword {
 
-    @NotBlank(message = "Email ID is required")
-    private String emailId;
+  @NotBlank(message = "Email ID is required")
+  private String emailId;
 
-    @NotBlank(message = "Current password is required")
-    private String currentPassword;
+  @NotBlank(message = "Current password is required")
+  private String currentPassword;
 
-    @NotBlank(message = "New password is required")
-    private String newPassword;
+  @NotBlank(message = "New password is required")
+  private String newPassword;
 
-    @NotBlank(message = "Confirm password is required")
-    private String confirmPassword;
+  @NotBlank(message = "Confirm password is required")
+  private String confirmPassword;
 }
