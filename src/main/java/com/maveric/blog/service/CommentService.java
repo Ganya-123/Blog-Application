@@ -21,127 +21,110 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-  private final CommentRepository commentRepository;
-  private final UserRepository userRepository;
-  private final PostRepository postRepository;
-  private final JwtService jwtService;
 
-  public CommentResponseDto createComment(CommentRequestDto requestDto, String token) {
-    Long tokenUserId = jwtService.extractUserId(token.substring(7));
-    if (requestDto.getAuthorId() != tokenUserId) {
-      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
-    }
-    User author =
-        userRepository
-            .findById(requestDto.getAuthorId())
-            .orElseThrow(() -> new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final JwtService jwtService;
 
-    Post post =
-        postRepository
-            .findById(requestDto.getPostId())
-            .orElseThrow(() -> new PostNotFoundException(Constants.POST_NOT_FOUND));
+    public CommentResponseDto createComment(CommentRequestDto requestDto, String token) {
+        Long tokenUserId = jwtService.extractUserId(token.substring(7));
+        if (!requestDto.getAuthorId().equals(tokenUserId)) {
+            throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+        }
+        User author = userRepository.findById(requestDto.getAuthorId())
+                .orElseThrow(() -> new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
-    if (!post.getAuthor().getId().equals(requestDto.getAuthorId())) {
-      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
-    }
+        Post post = postRepository.findById(requestDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(Constants.POST_NOT_FOUND));
 
-    if (!post.isPublished()) {
-      throw new PublishPostException(Constants.POST_NOT_PUBLISHED);
-    }
+        if (!post.getAuthor().getId().equals(requestDto.getAuthorId())) {
+            throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+        }
 
-    Comment parentComment = null;
-    if (requestDto.getParentId() != null) {
-      parentComment =
-          commentRepository
-              .findById(requestDto.getParentId())
-              .orElseThrow(() -> new CommentNotFoundException(Constants.PARENT_COMMENT_NOT_FOUND));
+        if (!post.isPublished()) {
+            throw new PublishPostException(Constants.POST_NOT_PUBLISHED);
+        }
 
-      if (!parentComment.getPost().getPostId().equals(requestDto.getPostId())) {
-        throw new CommentNotFoundException(Constants.PARENT_COMMENT_NOT_BELONGS_TO_POST);
-      }
-    }
+        Comment parentComment = null;
+        if (requestDto.getParentId() != null) {
+            parentComment = commentRepository.findById(requestDto.getParentId())
+                    .orElseThrow(() -> new CommentNotFoundException(Constants.PARENT_COMMENT_NOT_FOUND));
 
-    Comment comment = new Comment();
-    comment.setAuthor(author);
-    comment.setPost(post);
-    comment.setContent(requestDto.getContent());
-    comment.setParent(parentComment);
-    comment.setCreatedAt(LocalDateTime.now());
-    // comment.setUpdatedAt(LocalDateTime.now());
+            if (!parentComment.getPost().getPostId().equals(requestDto.getPostId())) {
+                throw new CommentNotFoundException(Constants.PARENT_COMMENT_NOT_BELONGS_TO_POST);
+            }
+        }
 
-    Comment savedComment = commentRepository.save(comment);
-    return convertToResponseDto(savedComment);
-  }
-
-  @Transactional
-  public CommentResponseDto editComment(
-      Long commentId, CommentRequestDto requestDto, String token) {
-    Long tokenUserId = jwtService.extractUserId(token.substring(7));
-    if (requestDto.getAuthorId() != tokenUserId) {
-      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+        Comment comment = new Comment();
+        comment.setAuthor(author);
+        comment.setPost(post);
+        comment.setContent(requestDto.getContent());
+        comment.setParent(parentComment);
+        comment.setCreatedAt(LocalDateTime.now());
+        Comment savedComment = commentRepository.save(comment);
+        return convertToResponseDto(savedComment);
     }
 
-    Comment comment =
-        commentRepository
-            .findById(commentId)
-            .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
-    if (comment.getAuthor().getId() != tokenUserId) {
-      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
-    }
-    comment.setContent(requestDto.getContent());
-    comment.setUpdatedAt(LocalDateTime.now());
 
-    Comment updatedComment = commentRepository.save(comment);
-    return convertToResponseDto(updatedComment);
-  }
+    @Transactional
+    public CommentResponseDto editComment(Long commentId, CommentRequestDto requestDto, String token) {
+        Long tokenUserId = jwtService.extractUserId(token.substring(7));
+        if (!requestDto.getAuthorId().equals(tokenUserId)) {
+            throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+        }
 
-  public String deleteComment(Long commentId, Long authorId, String token) {
-    Long tokenUserId = jwtService.extractUserId(token.substring(7));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
+        if (!comment.getAuthor().getId().equals(tokenUserId)) {
+            throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+        }
+        comment.setContent(requestDto.getContent());
+        comment.setUpdatedAt(LocalDateTime.now());
 
-    if (!authorId.equals(tokenUserId)) {
-      throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
-    }
-
-    Comment comment =
-        commentRepository
-            .findById(commentId)
-            .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
-
-    if (!comment.getAuthor().getId().equals(tokenUserId)) {
-      throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+        Comment updatedComment = commentRepository.save(comment);
+        return convertToResponseDto(updatedComment);
     }
 
-    commentRepository.delete(comment);
+    public String deleteComment(Long commentId, Long authorId, String token) {
+        Long tokenUserId = jwtService.extractUserId(token.substring(7));
 
-    return Constants.COMMENT_DELETE_SUCCESS;
-  }
+        if (!authorId.equals(tokenUserId)) {
+            throw new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED);
+        }
 
-  public String adminDelete(Long commentId) {
-    Comment comment =
-        commentRepository
-            .findById(commentId)
-            .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
-    commentRepository.delete(comment);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
 
-    return Constants.COMMENT_DELETE_SUCCESS;
-  }
+        if (!comment.getAuthor().getId().equals(tokenUserId)) {
+            throw new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT);
+        }
 
-  private CommentResponseDto convertToResponseDto(Comment comment) {
-    CommentResponseDto responseDto = new CommentResponseDto();
-    responseDto.setId(comment.getId());
-    responseDto.setContent(comment.getContent());
-    responseDto.setAuthorId(comment.getAuthor().getId());
-    responseDto.setAuthorName(comment.getAuthor().getFullName());
-    responseDto.setPostId(comment.getPost().getPostId());
-    responseDto.setParentId(comment.getParent() != null ? comment.getParent().getId() : null);
-    responseDto.setReplies(
-        comment.getReplies() != null
-            ? comment.getReplies().stream()
-                .map(this::convertToResponseDto)
-                .collect(Collectors.toList())
-            : null);
-    responseDto.setCreatedAt(comment.getCreatedAt());
-    responseDto.setUpdatedAt(comment.getUpdatedAt());
-    return responseDto;
-  }
+        commentRepository.delete(comment);
+
+        return Constants.COMMENT_DELETE_SUCCESS;
+    }
+
+    public String adminDelete(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(Constants.COMMENT_NOT_FOUND));
+        commentRepository.delete(comment);
+
+        return Constants.COMMENT_DELETE_SUCCESS;
+    }
+
+    private CommentResponseDto convertToResponseDto(Comment comment) {
+        CommentResponseDto responseDto = new CommentResponseDto();
+        responseDto.setId(comment.getId());
+        responseDto.setContent(comment.getContent());
+        responseDto.setAuthorId(comment.getAuthor().getId());
+        responseDto.setAuthorName(comment.getAuthor().getFullName());
+        responseDto.setPostId(comment.getPost().getPostId());
+        responseDto.setParentId(comment.getParent() != null ? comment.getParent().getId() : null);
+        responseDto.setReplies(comment.getReplies() != null ?
+                comment.getReplies().stream().map(this::convertToResponseDto).collect(Collectors.toList()) : null);
+        responseDto.setCreatedAt(comment.getCreatedAt());
+        responseDto.setUpdatedAt(comment.getUpdatedAt());
+        return responseDto;
+    }
 }

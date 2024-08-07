@@ -335,6 +335,7 @@ class PostControllerTest {
     assertEquals(Constants.POST_NOT_FOUND, exception.getMessage());
     verify(postService, times(1)).adminDeletePost(anyLong());
   }
+
   @Test
   void testGetAllPosts_EmptyList() {
     when(postService.getAllPosts()).thenReturn(Collections.emptyList());

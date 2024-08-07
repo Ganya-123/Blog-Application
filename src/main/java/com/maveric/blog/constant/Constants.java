@@ -16,12 +16,11 @@ public class Constants {
   public static final String PARENT_COMMENT_NOT_BELONGS_TO_POST =
       "Parent comment doesn't belong to the post";
   public static final String POST_DELETE_SUCCESS = "Post deleted successfully";
-
   public static final String CATEGORY_EXISTS = "Category already present";
   public static final String CATEGORY_DELETE_SUCCESS = "Category deleted successfully";
   public static final String EMAIL_EXISTS = "Email Already Registered";
   public static final String PASSWORD_CHANGE_SUCCESS = "Password Changed Successfully";
   public static final String PASSWORD_RESET_SUCCESS = "Password reset is successful";
   public static final String COMMENT_DELETE_SUCCESS = "Comment deleted successfully";
-  public static final String CATEGORY_ALREADY_PRESENT = "Category Already Present";
+  private Constants() {}
 }

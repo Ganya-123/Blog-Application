@@ -6,10 +6,11 @@ import com.maveric.blog.entity.Category;
 import com.maveric.blog.exception.CategoryNotFoundException;
 import com.maveric.blog.exception.CategoryPresentException;
 import com.maveric.blog.repository.CategoryRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +31,9 @@ public class CategoryService {
   }
 
   public String deleteCategory(Long id) {
-    Category category =
-        categoryRepository
-            .findById(id)
-            .orElseThrow(() -> new CategoryNotFoundException(Constants.CATEGORY_NOT_FOUND));
+    categoryRepository
+        .findById(id)
+        .orElseThrow(() -> new CategoryNotFoundException(Constants.CATEGORY_NOT_FOUND));
 
     categoryRepository.deleteById(id);
     return Constants.CATEGORY_DELETE_SUCCESS;

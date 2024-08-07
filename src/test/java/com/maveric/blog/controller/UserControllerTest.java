@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.ChangePassword;
 import com.maveric.blog.dto.RegisterResponse;
 import com.maveric.blog.dto.UserUpdateRequestDto;
@@ -48,7 +49,7 @@ class UserControllerTest {
     String token = "Bearer valid_token";
 
     when(authenticationService.changePassword(any(ChangePassword.class), any(String.class)))
-        .thenThrow(new UserNotFoundException("User not found"));
+        .thenThrow(new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
     Exception exception =
         assertThrows(
@@ -57,7 +58,7 @@ class UserControllerTest {
               userController.changePassword(changePassword, token);
             });
 
-    assertEquals("User not found", exception.getMessage());
+    assertEquals(Constants.AUTHOR_NOT_FOUND, exception.getMessage());
   }
 
   @Test
@@ -100,7 +101,7 @@ class UserControllerTest {
 
     when(authenticationService.updateUser(
             anyLong(), any(UserUpdateRequestDto.class), any(String.class)))
-        .thenThrow(new UserNotFoundException("User not found"));
+        .thenThrow(new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
     Exception exception =
         assertThrows(
@@ -109,7 +110,7 @@ class UserControllerTest {
               userController.updateUser(1L, updateRequest, "Bearer valid_token");
             });
 
-    assertEquals("User not found", exception.getMessage());
+    assertEquals(Constants.AUTHOR_NOT_FOUND, exception.getMessage());
   }
 
   @Test

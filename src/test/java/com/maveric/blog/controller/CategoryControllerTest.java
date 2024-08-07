@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.CategoryDto;
 import com.maveric.blog.exception.CategoryNotFoundException;
 import com.maveric.blog.exception.CategoryPresentException;
@@ -47,7 +48,7 @@ class CategoryControllerTest {
   @Test
   void testCreateCategory_CategoryExists() {
     when(categoryService.createCategory(any(CategoryDto.class)))
-        .thenThrow(new CategoryPresentException("Category already exists"));
+        .thenThrow(new CategoryPresentException(Constants.CATEGORY_EXISTS));
 
     Exception exception =
         assertThrows(
@@ -56,24 +57,24 @@ class CategoryControllerTest {
               categoryController.createCategory(categoryDto);
             });
 
-    assertEquals("Category already exists", exception.getMessage());
+    assertEquals(Constants.CATEGORY_EXISTS, exception.getMessage());
   }
 
   @Test
   void testDeleteCategory_Success() {
-    when(categoryService.deleteCategory(anyLong())).thenReturn("Category deleted successfully");
+    when(categoryService.deleteCategory(anyLong())).thenReturn(Constants.CATEGORY_DELETE_SUCCESS);
 
     ResponseEntity<String> response = categoryController.deleteCategory(1L);
 
     assertEquals(200, response.getStatusCodeValue());
-    assertEquals("Category deleted successfully", response.getBody());
+    assertEquals(Constants.CATEGORY_DELETE_SUCCESS, response.getBody());
     verify(categoryService, times(1)).deleteCategory(1L);
   }
 
   @Test
   void testDeleteCategory_NotFound() {
     when(categoryService.deleteCategory(anyLong()))
-        .thenThrow(new CategoryNotFoundException("Category not found"));
+        .thenThrow(new CategoryNotFoundException(Constants.CATEGORY_NOT_FOUND));
 
     Exception exception =
         assertThrows(
@@ -82,6 +83,6 @@ class CategoryControllerTest {
               categoryController.deleteCategory(5L);
             });
 
-    assertEquals("Category not found", exception.getMessage());
+    assertEquals(Constants.CATEGORY_NOT_FOUND, exception.getMessage());
   }
 }

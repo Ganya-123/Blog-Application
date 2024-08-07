@@ -27,8 +27,8 @@ public class UserController {
   @PutMapping("/{id}")
   @PreAuthorize("hasAuthority('WRITE') or hasAuthority('READ')")
   public ResponseEntity<RegisterResponse> updateUser(
-      @Valid @PathVariable Long id,
-      @RequestBody UserUpdateRequestDto updateRequest,
+      @PathVariable Long id,
+      @Valid @RequestBody UserUpdateRequestDto updateRequest,
       @RequestHeader("Authorization") String token) {
     RegisterResponse registerResponse = authenticationService.updateUser(id, updateRequest, token);
     return ResponseEntity.ok(registerResponse);

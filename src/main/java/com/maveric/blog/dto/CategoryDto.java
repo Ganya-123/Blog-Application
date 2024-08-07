@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
+
+  private Long id;
+
   @NotBlank(message = "Category cannot be blank")
   private String name;
 }
