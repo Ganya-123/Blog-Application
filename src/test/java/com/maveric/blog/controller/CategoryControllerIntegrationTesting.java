@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.CategoryDto;
 import com.maveric.blog.exception.CategoryNotFoundException;
 import com.maveric.blog.exception.CategoryPresentException;
@@ -26,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class CategoryControllerIntegrationTesting {
+class CategoryControllerIntegrationTesting {
 
   @Autowired private MockMvc mockMvc;
 
@@ -58,34 +59,34 @@ public class CategoryControllerIntegrationTesting {
   @WithMockUser(authorities = {"ADMIN"})
   void testCreateCategory_CategoryExists() throws Exception {
     when(categoryService.createCategory(any(CategoryDto.class)))
-        .thenThrow(new CategoryPresentException("Category already exists"));
+        .thenThrow(new CategoryPresentException(Constants.CATEGORY_EXISTS));
 
     mockMvc
         .perform(
             post("/category")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"Test Category\"}"))
-        .andExpect(jsonPath("$.message").value("Category already exists"));
+        .andExpect(jsonPath("$.message").value(Constants.CATEGORY_EXISTS));
   }
 
   @Test
   @WithMockUser(authorities = {"ADMIN"})
   void testDeleteCategory_Success() throws Exception {
-    when(categoryService.deleteCategory(anyLong())).thenReturn("Category deleted successfully");
+    when(categoryService.deleteCategory(anyLong())).thenReturn(Constants.CATEGORY_DELETE_SUCCESS);
 
     mockMvc
         .perform(delete("/category/1").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(content().string("Category deleted successfully"));
+        .andExpect(content().string(Constants.CATEGORY_DELETE_SUCCESS));
   }
 
   @Test
   @WithMockUser(authorities = {"ADMIN"})
   void testDeleteCategory_NotFound() throws Exception {
     when(categoryService.deleteCategory(anyLong()))
-        .thenThrow(new CategoryNotFoundException("Category not found"));
+        .thenThrow(new CategoryNotFoundException(Constants.CATEGORY_NOT_FOUND));
 
     mockMvc
         .perform(delete("/category/5").contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Category not found"));
+        .andExpect(jsonPath("$.message").value(Constants.CATEGORY_NOT_FOUND));
   }
 }

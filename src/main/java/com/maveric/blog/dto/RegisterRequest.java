@@ -21,8 +21,7 @@ public class RegisterRequest {
 
   @NotBlank(message = "Email is required")
   @Email(
-      regexp =
-          "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&’*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$",
+      regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$",
       message = "Email format is invalid")
   private String email;
 

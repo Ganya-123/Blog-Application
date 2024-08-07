@@ -4,11 +4,12 @@ import com.maveric.blog.dto.PostRequestDto;
 import com.maveric.blog.dto.PostResponseDto;
 import com.maveric.blog.service.PostService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

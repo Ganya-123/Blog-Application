@@ -82,7 +82,6 @@ class CommentControllerIntegrationTest {
 
     when(commentService.createComment(any(CommentRequestDto.class), anyString()))
         .thenThrow(new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED));
-
     mockMvc
         .perform(
             post("/comment/create")
@@ -95,7 +94,7 @@ class CommentControllerIntegrationTest {
                 .json(
                     "{\"status\":\"BAD_REQUEST\",\"message\":\""
                         + Constants.AUTHOR_VALIDATION_FAILED
-                        + "\",\"errors\":[]}")); // Validate the message here
+                        + "\",\"errors\":[]}"));
   }
 
   @Test

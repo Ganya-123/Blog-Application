@@ -31,7 +31,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthenticationServiceTest {
+class AuthenticationServiceTest {
 
   @Mock private UserRepository userRepository;
 
@@ -214,6 +214,7 @@ public class AuthenticationServiceTest {
     String result = authenticationService.changePassword(changePassword, token);
 
     assertEquals(Constants.PASSWORD_CHANGE_SUCCESS, result);
+    verify(userRepository).save(user);
   }
 
   @Test

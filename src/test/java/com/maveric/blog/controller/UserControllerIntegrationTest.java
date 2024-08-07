@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.ChangePassword;
 import com.maveric.blog.dto.PostRequestDto;
 import com.maveric.blog.dto.RegisterResponse;
@@ -54,7 +55,6 @@ class UserControllerIntegrationTest {
   @Test
   @WithMockUser(authorities = "WRITE")
   void testChangePassword_Success() throws Exception {
-    ChangePassword changePassword = new ChangePassword();
     String token = "Bearer valid_token";
     String expectedResponse = "Password changed successfully";
 
@@ -75,11 +75,10 @@ class UserControllerIntegrationTest {
   @Test
   @WithMockUser(authorities = "WRITE")
   void testChangePassword_UserNotFound() throws Exception {
-    ChangePassword changePassword = new ChangePassword();
     String token = "Bearer valid_token";
 
     when(authenticationService.changePassword(any(ChangePassword.class), any(String.class)))
-        .thenThrow(new UserNotFoundException("User not found"));
+        .thenThrow(new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
     mockMvc
         .perform(
@@ -89,13 +88,12 @@ class UserControllerIntegrationTest {
                 .content(
                     "{\"emailId\":\"john.doe@example.com\",\"currentPassword\":\"currentpassword123\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.message").value("User not found"));
+        .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
 
   @Test
   @WithMockUser(authorities = "WRITE")
   void testChangePassword_AuthorizationFailed() throws Exception {
-    ChangePassword changePassword = new ChangePassword();
     String token = "Bearer invalid_token";
 
     when(authenticationService.changePassword(any(ChangePassword.class), any(String.class)))
@@ -114,7 +112,6 @@ class UserControllerIntegrationTest {
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_Success() throws Exception {
-    UserUpdateRequestDto updateRequest = new UserUpdateRequestDto();
     RegisterResponse expectedResponse = new RegisterResponse();
     expectedResponse.setFullName("John Doe");
     expectedResponse.setMobileNumber("1234567890");
@@ -137,11 +134,9 @@ class UserControllerIntegrationTest {
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_UserNotFound() throws Exception {
-    UserUpdateRequestDto updateRequest = new UserUpdateRequestDto();
-
     when(authenticationService.updateUser(
             anyLong(), any(UserUpdateRequestDto.class), any(String.class)))
-        .thenThrow(new UserNotFoundException("User not found"));
+        .thenThrow(new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
 
     mockMvc
         .perform(
@@ -150,13 +145,12 @@ class UserControllerIntegrationTest {
                 .header("Authorization", "Bearer valid_token")
                 .content("{\"fullName\":\"John Doe\",\"mobileNumber\":\"1234567890\"}"))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.message").value("User not found"));
+        .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
 
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_AuthorizationFailed() throws Exception {
-    UserUpdateRequestDto updateRequest = new UserUpdateRequestDto();
 
     when(authenticationService.updateUser(
             anyLong(), any(UserUpdateRequestDto.class), any(String.class)))

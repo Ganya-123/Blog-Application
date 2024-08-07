@@ -33,7 +33,7 @@ import org.modelmapper.ModelMapper;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class PostServiceTest {
+class PostServiceTest {
 
   @Mock private PostRepository postRepository;
 
@@ -270,7 +270,7 @@ public class PostServiceTest {
     PostResponseDto response = postService.unpublishPost(1L, 1L, token);
 
     assertNotNull(response);
-    assertTrue(!post.isPublished());
+    assertFalse(post.isPublished());
   }
 
   @Test
@@ -391,7 +391,7 @@ public class PostServiceTest {
   }
 
   @Test
-  public void testGetAllPosts_EmptyList() {
+  void testGetAllPosts_EmptyList() {
 
     when(postRepository.findAll()).thenReturn(Collections.emptyList());
 
@@ -402,7 +402,7 @@ public class PostServiceTest {
   }
 
   @Test
-  public void testGetAllPosts_NonEmptyList() {
+  void testGetAllPosts_NonEmptyList() {
 
     Post post1 = new Post();
     Post post2 = new Post();

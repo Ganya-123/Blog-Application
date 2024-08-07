@@ -72,14 +72,14 @@ class AuthenticationControllerTest {
   @Test
   void testRegister_EmailAlreadyExists() {
     when(authenticationService.register(any(RegisterRequest.class)))
-        .thenThrow(new EmailAlreadyExistsException("Email already exists"));
+        .thenThrow(new EmailAlreadyExistsException(Constants.EMAIL_EXISTS));
 
     EmailAlreadyExistsException exception =
         assertThrows(
             EmailAlreadyExistsException.class,
             () -> authenticationController.register(registerRequest));
 
-    assertEquals("Email already exists", exception.getMessage());
+    assertEquals(Constants.EMAIL_EXISTS, exception.getMessage());
   }
 
   @Test

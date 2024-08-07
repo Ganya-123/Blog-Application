@@ -1,8 +1,9 @@
 package com.maveric.blog.dto;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Data;
 
 @Data
 public class CommentResponseDto {
