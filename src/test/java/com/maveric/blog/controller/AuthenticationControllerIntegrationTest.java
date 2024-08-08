@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.*;
 import com.maveric.blog.entity.Avatar;
@@ -32,7 +33,7 @@ class AuthenticationControllerIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @MockBean private AuthenticationService authenticationService;
-
+  @Autowired private ObjectMapper objectMapper;
   private RegisterRequest registerRequest;
   private AuthenticationRequest authenticationRequest;
   private ForgotPassword forgotPassword;
@@ -70,8 +71,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"fullName\":\"John Doe\",\"email\":\"john.doe@example.com\",\"password\":\"password123\",\"role\":\"WRITE\",\"bio\":\"Hello, I'm John\",\"avatar\":\"ALIEN\",\"mobileNumber\":\"1234567890\"}"))
+                .content(objectMapper.writeValueAsString(registerRequest)))
         .andExpect(jsonPath("$.email").value("john.doe@example.com"));
   }
 
@@ -84,8 +84,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"fullName\":\"John Doe\",\"email\":\"john.doe@example.com\",\"password\":\"password123\",\"role\":\"WRITE\",\"bio\":\"Hello, I'm John\",\"avatar\":\"ALIEN\",\"mobileNumber\":\"1234567890\"}"))
+                .content(objectMapper.writeValueAsString(registerRequest)))
         .andExpect(jsonPath("$.message").value(Constants.EMAIL_EXISTS));
   }
 
@@ -101,7 +100,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             post("/api/v1/auth/authenticate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"john.doe@example.com\",\"password\":\"password123\"}"))
+                .content(objectMapper.writeValueAsString(authenticationRequest)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value("valid-jwt-token"));
   }
@@ -115,7 +114,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             post("/api/v1/auth/authenticate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"john.doe@example.com\",\"password\":\"wrongpassword\"}"))
+                .content(objectMapper.writeValueAsString(authenticationRequest)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
@@ -129,8 +128,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             put("/api/v1/auth/forgotPassword")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"mobileNumber\":\"1234567890\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(forgotPassword)))
         .andExpect(status().isOk())
         .andExpect(content().string(Constants.PASSWORD_RESET_SUCCESS));
   }
@@ -144,8 +142,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             put("/api/v1/auth/forgotPassword")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"mobileNumber\":\"1234567890\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(forgotPassword)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
@@ -161,8 +158,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             put("/api/v1/auth/forgotPassword")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"mobileNumber\":\"wrong_mobile_number\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(forgotPassword)))
         .andExpect(status().isOk())
         .andExpect(content().string(errorMessage));
   }
@@ -178,8 +174,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             put("/api/v1/auth/forgotPassword")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"mobileNumber\":\"1234567890\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"differentpassword\"}"))
+                .content(objectMapper.writeValueAsString(forgotPassword)))
         .andExpect(status().isOk())
         .andExpect(content().string(errorMessage));
   }
@@ -193,8 +188,7 @@ class AuthenticationControllerIntegrationTest {
         .perform(
             put("/api/v1/auth/forgotPassword")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"mobileNumber\":\"1234567890\",\"newPassword\":\"password123\",\"confirmPassword\":\"password123\"}"))
+                .content(objectMapper.writeValueAsString(forgotPassword)))
         .andExpect(status().isOk())
         .andExpect(content().string(errorMessage));
   }

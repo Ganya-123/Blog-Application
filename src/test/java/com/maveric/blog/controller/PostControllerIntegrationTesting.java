@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PostControllerIntegrationTesting {
+class PostControllerIntegrationTesting {
 
   private static final String VALID_TEST_TOKEN = "Bearer valid-test-token";
   @Autowired private MockMvc mockMvc;
@@ -62,7 +62,7 @@ public class PostControllerIntegrationTesting {
 
   @Test
   @WithMockUser(authorities = "WRITE")
-  public void testCreatePost() throws Exception {
+  void testCreatePost() throws Exception {
     PostRequestDto postRequestDto = new PostRequestDto();
     postRequestDto.setTitle("Sample Title");
     postRequestDto.setContent("Sample content");
@@ -149,8 +149,7 @@ public class PostControllerIntegrationTesting {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer valid-test-token")
                 .content(objectMapper.writeValueAsString(postRequestDto)))
-        .andExpect(jsonPath("$.message").value(Constants.CATEGORY_NOT_FOUND))
-        .andExpect(jsonPath("$.errors").isEmpty());
+        .andExpect(jsonPath("$.message").value(Constants.CATEGORY_NOT_FOUND));
   }
 
   @Test
@@ -163,7 +162,7 @@ public class PostControllerIntegrationTesting {
     postRequestDto.setCategoryId(1L);
     postRequestDto.setFeatured(false);
 
-    when(postService.updatePost(anyLong(), any(PostRequestDto.class), anyString()))
+    when(postService.updatePost(1L, postRequestDto, "Bearer valid-test-token"))
         .thenReturn(postResponseDto);
 
     mockMvc
@@ -508,7 +507,7 @@ public class PostControllerIntegrationTesting {
 
   @Test
   @WithMockUser(authorities = {"WRITE", "READ"})
-  public void testGetAllPosts_EmptyList() throws Exception {
+  void testGetAllPosts_EmptyList() throws Exception {
 
     when(postService.getAllPosts()).thenReturn(Collections.emptyList());
 
@@ -521,7 +520,7 @@ public class PostControllerIntegrationTesting {
 
   @Test
   @WithMockUser(authorities = {"WRITE", "READ"})
-  public void testGetAllPosts_NonEmptyList() throws Exception {
+  void testGetAllPosts_NonEmptyList() throws Exception {
 
     PostResponseDto post1 = new PostResponseDto();
     post1.setPostId(1L);

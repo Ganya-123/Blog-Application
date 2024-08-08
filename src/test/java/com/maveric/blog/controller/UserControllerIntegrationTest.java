@@ -5,11 +5,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maveric.blog.constant.Constants;
-import com.maveric.blog.dto.ChangePassword;
-import com.maveric.blog.dto.PostRequestDto;
-import com.maveric.blog.dto.RegisterResponse;
-import com.maveric.blog.dto.UserUpdateRequestDto;
+import com.maveric.blog.dto.*;
+import com.maveric.blog.entity.Avatar;
 import com.maveric.blog.exception.AuthorValidationException;
 import com.maveric.blog.exception.UserNotFoundException;
 import com.maveric.blog.security.JwtService;
@@ -35,13 +34,15 @@ import org.springframework.test.web.servlet.MockMvc;
 class UserControllerIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
-
+  @Autowired private ObjectMapper objectMapper;
   @MockBean private AuthenticationService authenticationService;
 
   @MockBean private JwtService jwtService;
 
   private UserDetails mockUserDetails;
   private PostRequestDto postRequestDto;
+  private ChangePassword changePassword;
+  private ForgotPassword forgotPassword;
 
   @BeforeEach
   void setUp() {
@@ -50,6 +51,10 @@ class UserControllerIntegrationTest {
     when(jwtService.extractUserId(anyString())).thenReturn(1L);
     when(jwtService.isTokenValid(anyString(), any(UserDetails.class))).thenReturn(true);
     when(jwtService.extractUsername(anyString())).thenReturn(mockUserDetails.getUsername());
+    changePassword =
+        new ChangePassword("test@example.com", "oldPassword", "newPassword", "newPassword");
+    forgotPassword =
+        new ForgotPassword("test@example.com", "1234567890", "newPassword", "newPassword");
   }
 
   @Test
@@ -66,8 +71,7 @@ class UserControllerIntegrationTest {
             put("/user/PasswordChange")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"currentPassword\":\"currentpassword123\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(changePassword)))
         .andExpect(status().isOk())
         .andExpect(content().string(expectedResponse));
   }
@@ -85,8 +89,7 @@ class UserControllerIntegrationTest {
             put("/user/PasswordChange")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"currentPassword\":\"currentpassword123\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(changePassword)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
@@ -104,36 +107,43 @@ class UserControllerIntegrationTest {
             put("/user/PasswordChange")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
-                .content(
-                    "{\"emailId\":\"john.doe@example.com\",\"currentPassword\":\"currentpassword123\",\"newPassword\":\"newpassword123\",\"confirmPassword\":\"newpassword123\"}"))
+                .content(objectMapper.writeValueAsString(changePassword)))
         .andExpect(jsonPath("$.message").value("Authorization failed"));
   }
 
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_Success() throws Exception {
+    String token = "Bearer invalid_token";
     RegisterResponse expectedResponse = new RegisterResponse();
-    expectedResponse.setFullName("John Doe");
-    expectedResponse.setMobileNumber("1234567890");
+    expectedResponse.setFullName("Axelson");
+    expectedResponse.setBio("I am Cat");
+    expectedResponse.setAvatar(Avatar.ALIEN);
 
-    when(authenticationService.updateUser(
-            anyLong(), any(UserUpdateRequestDto.class), any(String.class)))
+    UserUpdateRequestDto userUpdateRequestDto = new UserUpdateRequestDto();
+    userUpdateRequestDto.setFullName("Axelson");
+    userUpdateRequestDto.setAvatar(Avatar.ALIEN);
+    userUpdateRequestDto.setMobileNumber("1234567890");
+    userUpdateRequestDto.setBio("I am Cat");
+
+    when(authenticationService.updateUser(1L, userUpdateRequestDto, token))
         .thenReturn(expectedResponse);
 
     mockMvc
         .perform(
-            put("/user/1")
+            put("/user/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer valid_token")
-                .content("{\"fullName\":\"John Doe\",\"mobileNumber\":\"1234567890\"}"))
+                .header("Authorization", token)
+                .content(objectMapper.writeValueAsString(userUpdateRequestDto)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.fullName").value("John Doe"))
-        .andExpect(jsonPath("$.mobileNumber").value("1234567890"));
+        .andExpect(jsonPath("$.fullName").value(userUpdateRequestDto.getFullName()));
   }
 
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_UserNotFound() throws Exception {
+    UserUpdateRequestDto userUpdateRequestDto = new UserUpdateRequestDto();
+    userUpdateRequestDto.setFullName("Axelson");
     when(authenticationService.updateUser(
             anyLong(), any(UserUpdateRequestDto.class), any(String.class)))
         .thenThrow(new UserNotFoundException(Constants.AUTHOR_NOT_FOUND));
@@ -143,7 +153,7 @@ class UserControllerIntegrationTest {
             put("/user/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer valid_token")
-                .content("{\"fullName\":\"John Doe\",\"mobileNumber\":\"1234567890\"}"))
+                .content(objectMapper.writeValueAsString(userUpdateRequestDto)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value(Constants.AUTHOR_NOT_FOUND));
   }
@@ -151,17 +161,18 @@ class UserControllerIntegrationTest {
   @Test
   @WithMockUser(authorities = "WRITE")
   void testUpdateUser_AuthorizationFailed() throws Exception {
-
+    UserUpdateRequestDto userUpdateRequestDto = new UserUpdateRequestDto();
+    userUpdateRequestDto.setFullName("Axelson");
     when(authenticationService.updateUser(
             anyLong(), any(UserUpdateRequestDto.class), any(String.class)))
-        .thenThrow(new AuthorValidationException("Authorization failed"));
+        .thenThrow(new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED));
 
     mockMvc
         .perform(
             put("/user/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer invalid_token")
-                .content("{\"fullName\":\"John Doe\",\"mobileNumber\":\"1234567890\"}"))
-        .andExpect(jsonPath("$.message").value("Authorization failed"));
+                .content(objectMapper.writeValueAsString(userUpdateRequestDto)))
+        .andExpect(jsonPath("$.message").value(Constants.AUTHOR_VALIDATION_FAILED));
   }
 }

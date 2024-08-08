@@ -22,5 +22,6 @@ public class Constants {
   public static final String PASSWORD_CHANGE_SUCCESS = "Password Changed Successfully";
   public static final String PASSWORD_RESET_SUCCESS = "Password reset is successful";
   public static final String COMMENT_DELETE_SUCCESS = "Comment deleted successfully";
+
   private Constants() {}
 }

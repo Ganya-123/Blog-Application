@@ -120,7 +120,6 @@ class CommentControllerTest {
 
   @Test
   void testEditComment_Success() {
-    when(jwtService.extractUserId(anyString())).thenReturn(1L);
     when(commentService.editComment(anyLong(), any(CommentRequestDto.class), anyString()))
         .thenReturn(commentResponseDto);
 
@@ -137,7 +136,6 @@ class CommentControllerTest {
 
   @Test
   void testEditComment_AuthorValidationFailed() {
-    when(jwtService.extractUserId(anyString())).thenReturn(2L);
     when(commentService.editComment(anyLong(), any(CommentRequestDto.class), anyString()))
         .thenThrow(new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED));
 
@@ -151,7 +149,6 @@ class CommentControllerTest {
 
   @Test
   void testEditComment_CommentNotFound() {
-    when(jwtService.extractUserId(anyString())).thenReturn(1L);
     when(commentService.editComment(anyLong(), any(CommentRequestDto.class), anyString()))
         .thenThrow(new CommentNotFoundException());
 
@@ -163,7 +160,6 @@ class CommentControllerTest {
 
   @Test
   void testEditComment_AuthorIsDifferent() {
-    when(jwtService.extractUserId(anyString())).thenReturn(1L);
     when(commentService.editComment(anyLong(), any(CommentRequestDto.class), anyString()))
         .thenThrow(new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT));
 
@@ -176,8 +172,15 @@ class CommentControllerTest {
   }
 
   @Test
+  void testDeleteComment_success() {
+    when(commentService.deleteComment(1L, 1L, token)).thenReturn(Constants.COMMENT_DELETE_SUCCESS);
+
+    ResponseEntity<String> response = commentController.deleteComment(1L, 1L, token);
+    assertEquals(Constants.COMMENT_DELETE_SUCCESS, response.getBody());
+  }
+
+  @Test
   void testDeleteComment_AuthorValidationFailed() {
-    when(jwtService.extractUserId(anyString())).thenReturn(2L);
     doThrow(new AuthorValidationException(Constants.AUTHOR_VALIDATION_FAILED))
         .when(commentService)
         .deleteComment(anyLong(), anyLong(), anyString());
@@ -191,7 +194,6 @@ class CommentControllerTest {
 
   @Test
   void testDeleteComment_CommentNotFound() {
-    when(jwtService.extractUserId(anyString())).thenReturn(1L);
     doThrow(new CommentNotFoundException())
         .when(commentService)
         .deleteComment(anyLong(), anyLong(), anyString());
@@ -203,7 +205,6 @@ class CommentControllerTest {
 
   @Test
   void testDeleteComment_AuthorIsDifferent() {
-    when(jwtService.extractUserId(anyString())).thenReturn(1L);
     doThrow(new AuthorValidationException(Constants.AUTHOR_IS_DIFFERENT))
         .when(commentService)
         .deleteComment(anyLong(), anyLong(), anyString());

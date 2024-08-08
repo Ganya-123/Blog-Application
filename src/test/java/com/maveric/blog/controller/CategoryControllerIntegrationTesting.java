@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maveric.blog.constant.Constants;
 import com.maveric.blog.dto.CategoryDto;
 import com.maveric.blog.exception.CategoryNotFoundException;
@@ -32,7 +33,7 @@ class CategoryControllerIntegrationTesting {
   @Autowired private MockMvc mockMvc;
 
   @MockBean private CategoryService categoryService;
-
+  @Autowired private ObjectMapper objectMapper;
   private CategoryDto categoryDto;
 
   @BeforeEach
@@ -50,7 +51,7 @@ class CategoryControllerIntegrationTesting {
         .perform(
             post("/category")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Test Category\"}"))
+                .content(objectMapper.writeValueAsString(categoryDto)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("Test Category"));
   }
@@ -65,7 +66,7 @@ class CategoryControllerIntegrationTesting {
         .perform(
             post("/category")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Test Category\"}"))
+                .content(objectMapper.writeValueAsString(categoryDto)))
         .andExpect(jsonPath("$.message").value(Constants.CATEGORY_EXISTS));
   }
 
