@@ -1,0 +1,78 @@
+{
+  "info": {
+    "_postman_id": "728a92b1-b9f2-4107-9876-2b15e96e5de8",
+    "name": "category",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29554621"
+  },
+  "item": [
+    {
+      "name": "addCategory",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwic3ViIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTgxODQsImV4cCI6MTcyMjQ0NDU4NH0.TplAje7KB7OVyAUCLJCKcWZ6AdD9AfsUbBKaXh1gy2E",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"Sports\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/category",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "category"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteCategory",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwic3ViIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTgxODQsImV4cCI6MTcyMjQ0NDU4NH0.TplAje7KB7OVyAUCLJCKcWZ6AdD9AfsUbBKaXh1gy2E",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/category/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "category",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

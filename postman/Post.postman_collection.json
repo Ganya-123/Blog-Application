@@ -1,0 +1,172 @@
+{
+  "info": {
+    "_postman_id": "f350d4bc-03a8-439e-8651-ed44fedfddf2",
+    "name": "Post",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29554621"
+  },
+  "item": [
+    {
+      "name": "updatePost",
+      "request": {
+        "method": "PUT",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "publish",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIxNzI3MzE5LCJleHAiOjE3MjE3Mjg3NTl9.HlIpr_qlitv0C-LDYbfLbVfKNoVE-6i-uwktrSAgWwM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/20/publish",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "20",
+            "publish"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "unpublish",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIxNzI3NTYwLCJleHAiOjE3MjE3MjkwMDB9.t2li4_2QRlG3qRxjkPvDE8OJbbYxVAdgWurLNI1l6nY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "addPost",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIxNjUzMjE2LCJleHAiOjE3MjE2NTQ2NTZ9.dRj-V387MYCiyFjB8K4mrBAovMrAE4BBz6JiLDdwS_",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Dosa\",\r\n    \"content\": \"How to prepare dosa.\",\r\n    \"authorId\": 1,\r\n    \"categoryId\": 2,\r\n    \"featured\": false\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/api/v1/authpost",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "authpost"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deletePost",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1QGV4YW1wbGUuY29tIiwiaWF0IjoxNzIxODE2NjQ4LCJleHAiOjE3MjE5MDMwNDh9.69_dt3S67qE0QY0qBpOwnM-OTZqGCRDsT4X89CBS9_4",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "adminDel",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NTIsInN1YiI6ImFAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIyMzg1MTUsImV4cCI6MTcyMjMyNDkxNX0.KQ3a-p9UWAWnz_V8l36UI2ZylQr7pOs4jFjyHWNFAJk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getAllPosts",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

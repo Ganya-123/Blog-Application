@@ -1,0 +1,117 @@
+{
+  "info": {
+    "_postman_id": "2dc7703a-8eb2-4327-857d-5c5b421d533e",
+    "name": "Authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29554621"
+  },
+  "item": [
+    {
+      "name": "register",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"fullName\": \"Ganya Write\",\r\n  \"email\": \"mexample\",\r\n  \"password\": \"admin\",\r\n  \"role\": \"ADMIN\",\r\n  \"bio\":\"Rohit a greatest person\",\r\n  \"avatar\":\"DOG\",\r\n  \"mobileNumber\":\"1234567890\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/api/v1/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "logout",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzIxNjQ2NTIwLCJleHAiOjE3MjE2NDc5NjB9.QpXizhLhjmSTj42uM5UyxWVp_8DpIRM0RaEBExAPib0",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/api/v1/auth/logout",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "logout"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwic3ViIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTgxODQsImV4cCI6MTcyMjQ0NDU4NH0.TplAje7KB7OVyAUCLJCKcWZ6AdD9AfsUbBKaXh1gy2E",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " { \"email\": \"write@example.com\",\r\n  \"password\": \"write\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/api/v1/auth/authenticate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "authenticate"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

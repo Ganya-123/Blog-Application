@@ -1,0 +1,152 @@
+{
+  "info": {
+    "_postman_id": "b9618f30-9ae0-41de-8f01-ad9f2bf7999f",
+    "name": "comment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29554621"
+  },
+  "item": [
+    {
+      "name": "addComment",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwic3ViIjoid3JpdGVAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTk3OTgsImV4cCI6MTcyMjQ0NjE5OH0.yeWRxPq2hdmEk3m9B7ZvSS_hHQN8nIVxu2q9sl4ngCg",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"content\": \" 7 comment\",\r\n  \"authorId\": 4,\r\n  \"postId\": 2,\r\n  \"parentId\": 1\r\n  }\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/comment/create",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "comment",
+            "create"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "updateComment",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwic3ViIjoid3JpdGVAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTk3OTgsImV4cCI6MTcyMjQ0NjE5OH0.yeWRxPq2hdmEk3m9B7ZvSS_hHQN8nIVxu2q9sl4ngCg",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"content\": \" i commented for first time\",\r\n  \"authorId\": 4,\r\n  \"postId\": 2,\r\n  \"parentId\": null\r\n  }\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/comment/1/edit",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "comment",
+            "1",
+            "edit"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6NCwic3ViIjoid3JpdGVAZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTk3OTgsImV4cCI6MTcyMjQ0NjE5OH0.yeWRxPq2hdmEk3m9B7ZvSS_hHQN8nIVxu2q9sl4ngCg",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/comment/author/4/comment/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "comment",
+            "author",
+            "4",
+            "comment",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "adminDelete",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwic3ViIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3MjIzNTgxODQsImV4cCI6MTcyMjQ0NDU4NH0.TplAje7KB7OVyAUCLJCKcWZ6AdD9AfsUbBKaXh1gy2E",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/comment/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "comment",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

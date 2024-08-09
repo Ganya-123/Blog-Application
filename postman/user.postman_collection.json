@@ -1,0 +1,102 @@
+{
+  "info": {
+    "_postman_id": "c813c7be-8940-4d25-b01e-069b03417b5a",
+    "name": "user",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29554621"
+  },
+  "item": [
+    {
+      "name": "updateUser",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"fullName\":\r\n     \"bio\":\r\n   \"avatar\":\r\n    \"mobileNumber\":\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/api/v1/auth/105",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "105"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "forgotPassword",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8765/api/v1/auth/forgotPassword",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "forgotPassword"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "changePassword",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwic3ViIjoid0BleGFtcGxlLmNvbSIsImlhdCI6MTcyMjI0NTY0NSwiZXhwIjoxNzIyMzMyMDQ1fQ.KzAttwvBHv2n7X3SnoUNJuU8HraKTyLUCUkxAvfLqJw",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"emailId\":\"w@example.com\",\r\n     \"currentPassword\":\"gany\",\r\n    \"newPassword\":\"gan\",\r\n   \"confirmPassword\":\"gan\"\r\n   }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8765/user/changePassword",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8765",
+          "path": [
+            "user",
+            "changePassword"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
